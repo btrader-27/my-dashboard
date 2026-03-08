@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>My Daily Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a14;color:#e8e6f0;font-family:'Outfit',sans-serif;min-height:100vh;}
+
+#setup{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2rem;text-align:center;}
+#setup h1{font-family:'Playfair Display',serif;font-size:2.2rem;color:#6ee7b7;margin-bottom:.5rem;}
+#setup .sub{color:#6b6b8a;margin-bottom:1.8rem;max-width:480px;line-height:1.6;font-size:.92rem;}
+#setup input{width:100%;max-width:540px;padding:.85rem 1.1rem;background:#181828;border:2px solid #2d2d4a;border-radius:12px;color:#e8e6f0;font-size:.88rem;font-family:inherit;outline:none;margin-bottom:.75rem;}
+#setup input:focus{border-color:#6ee7b7;}
+#setup button{width:100%;max-width:540px;padding:.9rem;background:#6ee7b7;border:none;border-radius:12px;color:#0a0a14;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:1.5rem;}
+
+.steps{width:100%;max-width:540px;text-align:left;}
+.step{background:#181828;border:1px solid #1e1e30;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.6rem;display:flex;gap:.9rem;align-items:flex-start;}
+.step-num{background:#818cf8;color:#fff;font-weight:700;font-size:.75rem;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem;}
+.step-body{font-size:.82rem;color:#9ca3af;line-height:1.7;}
+.step-body strong{color:#e8e6f0;}
+.step-body code{background:#0a0a14;color:#6ee7b7;padding:.1rem .4rem;border-radius:4px;font-size:.78rem;font-family:monospace;}
+
+#dash{display:none;}
+header{background:#0f0f1c;border-bottom:1px solid #1e1e30;padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;position:sticky;top:0;z-index:10;}
+header h1{font-family:'Playfair Display',serif;font-size:1.4rem;color:#6ee7b7;}
+.hdate{font-size:.78rem;color:#6b6b8a;margin-top:.1rem;}
+.hbtns{display:flex;gap:.6rem;}
+.hbtn{padding:.4rem 1rem;border-radius:99px;border:1px solid #2d2d4a;background:transparent;color:#e8e6f0;font-size:.78rem;font-family:inherit;cursor:pointer;}
+.hbtn.go{background:#6ee7b7;border-color:#6ee7b7;color:#0a0a14;font-weight:700;}
+
+.stats-row{max-width:760px;margin:2rem auto 0;padding:0 1.5rem;display:flex;gap:1rem;flex-wrap:wrap;}
+.stat{flex:1;min-width:110px;background:#181828;border:1px solid #1e1e30;border-radius:14px;padding:1rem 1.2rem;text-align:center;}
+.stat .num{font-family:'Playfair Display',serif;font-size:2.1rem;}
+.stat .lbl{font-size:.73rem;color:#6b6b8a;margin-top:.1rem;}
+
+.prog-wrap{max-width:760px;margin:1.5rem auto 0;padding:0 1.5rem;}
+.prog-top{display:flex;justify-content:space-between;font-size:.8rem;color:#6b6b8a;margin-bottom:.4rem;}
+.prog-bar{height:8px;background:#1e1e30;border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,#6ee7b7,#818cf8);border-radius:99px;transition:width .7s ease;}
+
+.filters{max-width:760px;margin:1.3rem auto 0;padding:0 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;}
+.fbtn{padding:.32rem .9rem;border-radius:99px;border:1px solid #2d2d4a;background:transparent;color:#6b6b8a;font-size:.78rem;cursor:pointer;font-family:inherit;}
+.fbtn.on{background:#818cf8;border-color:#818cf8;color:#fff;}
+
+.task-list{max-width:760px;margin:1.2rem auto 2rem;padding:0 1.5rem;}
+.task{background:#181828;border:1px solid #1e1e30;border-radius:14px;padding:.85rem 1.1rem;margin-bottom:.55rem;display:flex;align-items:center;gap:1rem;}
+.task.done{opacity:.38;}
+.task.done .task-name{text-decoration:line-through;}
+.task-time{min-width:70px;font-size:.76rem;font-weight:600;color:#818cf8;text-align:center;}
+.task-body{flex:1;}
+.task-name{font-size:.95rem;font-weight:500;}
+.task-cat{display:inline-block;margin-top:.22rem;font-size:.68rem;padding:.1rem .6rem;border-radius:99px;background:rgba(129,140,248,.15);color:#818cf8;font-weight:600;}
+.task-check{width:24px;height:24px;border-radius:50%;border:2px solid #2d2d4a;display:flex;align-items:center;justify-content:center;font-size:.78rem;flex-shrink:0;}
+.task-check.yes{background:#34d399;border-color:#34d399;color:#0a0a14;font-weight:900;}
+
+.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:12px;padding:.8rem 1rem;font-size:.83rem;color:#f87171;margin-bottom:1rem;display:none;line-height:1.6;}
+.loading-msg{text-align:center;padding:2rem;color:#6b6b8a;}
+.empty{text-align:center;padding:2.5rem;color:#2d2d4a;}
+
+#debugPanel{max-width:760px;margin:0 auto 1.5rem;padding:0 1.5rem;}
+#debugPanel details{background:#0f0f1c;border:1px solid #1e1e30;border-radius:10px;padding:.6rem .9rem;}
+#debugPanel summary{cursor:pointer;color:#4b5563;font-size:.74rem;user-select:none;}
+#debugLog{margin-top:.5rem;line-height:2;font-family:monospace;white-space:pre-wrap;font-size:.7rem;color:#6b6b8a;}
+
+footer{text-align:center;padding:1rem;font-size:.72rem;color:#2d2d4a;border-top:1px solid #1e1e30;margin-top:1rem;}
+</style>
+</head>
+<body>
+
+<div id="setup">
+  <h1>My Daily Tasks</h1>
+  <p class="sub">One-time setup using a free Google Apps Script. Takes 2 minutes and works from anywhere.</p>
+
+  <input id="scriptUrl" placeholder="Paste your Google Apps Script URL here..."/>
+  <button onclick="go()">Load My Tasks</button>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">In your Google Sheet go to <strong>Extensions &rarr; Apps Script</strong></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Delete everything and paste this code:
+        <br><br>
+        <code>function doGet(e) {</code><br>
+        <code>&nbsp;&nbsp;var sheet = SpreadsheetApp.getActiveSpreadsheet()</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;.getSheetByName("Tasks");</code><br>
+        <code>&nbsp;&nbsp;var rows = sheet.getDataRange().getValues();</code><br>
+        <code>&nbsp;&nbsp;var csv = rows.map(r => r.join(",")).join("\n");</code><br>
+        <code>&nbsp;&nbsp;return ContentService.createTextOutput(csv)</code><br>
+        <code>&nbsp;&nbsp;&nbsp;&nbsp;.setMimeType(ContentService.MimeType.TEXT);</code><br>
+        <code>}</code>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Deploy &rarr; New deployment &rarr; Web app</strong><br>
+        Set "Execute as" = <strong>Me</strong><br>
+        Set "Who has access" = <strong>Anyone</strong><br>
+        Click Deploy &rarr; copy the URL
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">Paste the URL into the box above and click <strong>Load My Tasks</strong></div>
+    </div>
+  </div>
+</div>
+
+<div id="dash">
+  <header>
+    <div>
+      <h1>My Daily Tasks</h1>
+      <div class="hdate" id="hDate"></div>
+    </div>
+    <div class="hbtns">
+      <button class="hbtn" onclick="goBack()">&#9998; Setup</button>
+      <button class="hbtn go" onclick="doLoad()">&#8635; Refresh</button>
+    </div>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat"><div class="num" id="sTotal" style="color:#818cf8">0</div><div class="lbl">Total</div></div>
+    <div class="stat"><div class="num" id="sDone"  style="color:#34d399">0</div><div class="lbl">Done</div></div>
+    <div class="stat"><div class="num" id="sLeft"  style="color:#fbbf24">0</div><div class="lbl">Left</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-top"><span>Daily Progress</span><span id="pPct">0%</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="pFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="task-list">
+    <div class="err" id="errMsg"></div>
+    <div id="taskList"></div>
+  </div>
+
+  <div id="debugPanel">
+    <details>
+      <summary>&#128027; Debug log</summary>
+      <div id="debugLog"></div>
+    </details>
+  </div>
+
+  <footer>Last loaded: <span id="lastLoad">—</span></footer>
+</div>
+
+<script>
+var allTasks     = [];
+var activeFilter = 'All';
+var scriptUrl    = '';
+var debugLines   = [];
+
+function log(msg) {
+  debugLines.push(new Date().toLocaleTimeString() + '  ' + msg);
+  var el = document.getElementById('debugLog');
+  if (el) el.textContent = debugLines.join('\n');
+}
+
+(function init(){
+  try { scriptUrl = localStorage.getItem('script_url') || ''; } catch(e){}
+  document.getElementById('hDate').textContent = new Date().toLocaleDateString('en-US',{
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+  if (scriptUrl) {
+    document.getElementById('scriptUrl').value = scriptUrl;
+    showDash(); doLoad();
+  }
+})();
+
+function go() {
+  scriptUrl = document.getElementById('scriptUrl').value.trim();
+  if (!scriptUrl) { alert('Please paste your Apps Script URL.'); return; }
+  try { localStorage.setItem('script_url', scriptUrl); } catch(e){}
+  showDash(); doLoad();
+}
+function showDash() {
+  document.getElementById('setup').style.display = 'none';
+  document.getElementById('dash').style.display  = 'block';
+}
+function goBack() {
+  document.getElementById('scriptUrl').value = scriptUrl;
+  document.getElementById('setup').style.display = 'flex';
+  document.getElementById('dash').style.display  = 'none';
+}
+
+async function doLoad() {
+  debugLines = [];
+  showErr('');
+  document.getElementById('taskList').innerHTML = '<div class="loading-msg">Loading...</div>';
+  log('Fetching: ' + scriptUrl.slice(0,80));
+  try {
+    // Apps Script web apps support CORS — direct fetch works fine
+    var r = await fetch(scriptUrl, { redirect: 'follow' });
+    log('Status: ' + r.status);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var text = await r.text();
+    log('Received ' + text.length + ' bytes');
+    allTasks = parseCSV(text);
+    if (allTasks.length === 0) throw new Error('0 tasks parsed — check Apps Script code and sheet tab name');
+    activeFilter = 'All';
+    render();
+    document.getElementById('lastLoad').textContent = new Date().toLocaleTimeString();
+  } catch(e) {
+    showErr(e.message + '\n\nMake sure you deployed with "Anyone" access and copied the correct URL.');
+    document.getElementById('taskList').innerHTML = '';
+    log('ERROR: ' + e.message);
+  }
+}
+
+function parseCSV(text) {
+  text = text.replace(/^\uFEFF/, '');
+  var rawLines = text.split(/\r?\n/).filter(function(l){ return l.trim(); });
+
+  function splitLine(line) {
+    var cells=[], cur='', inQ=false;
+    for (var i=0; i<line.length; i++) {
+      var c=line[i];
+      if(c==='"') inQ=!inQ;
+      else if(c===',' && !inQ){ cells.push(cur.replace(/"/g,'').trim()); cur=''; }
+      else cur+=c;
+    }
+    cells.push(cur.replace(/"/g,'').trim());
+    return cells;
+  }
+
+  // Find header row (the one containing "task")
+  var headerIdx = -1;
+  for (var i=0; i<rawLines.length; i++) {
+    var low = splitLine(rawLines[i]).map(function(c){ return c.toLowerCase(); });
+    if (low.indexOf('task') !== -1) { headerIdx = i; break; }
+  }
+  if (headerIdx === -1) {
+    log('No header row with "task" found. First 5 rows:');
+    rawLines.slice(0,5).forEach(function(l,i){ log('  ['+i+']: '+l.slice(0,90)); });
+    return [];
+  }
+
+  var hdrs = splitLine(rawLines[headerIdx]).map(function(h){ return h.toLowerCase(); });
+  log('Headers at row ' + headerIdx + ': ' + hdrs.join(' | '));
+
+  var rows = [];
+  for (var r=headerIdx+1; r<rawLines.length; r++) {
+    var vals = splitLine(rawLines[r]);
+    var obj = {};
+    hdrs.forEach(function(h,idx){ obj[h] = (vals[idx]||'').trim(); });
+    if (obj.task) rows.push(obj);
+  }
+  log('Task rows: ' + rows.length);
+  return rows;
+}
+
+function render() {
+  var cats=['All'];
+  allTasks.forEach(function(t){
+    var c=t.category||'General';
+    if(cats.indexOf(c)===-1) cats.push(c);
+  });
+  document.getElementById('filters').innerHTML = cats.map(function(c){
+    return '<button class="fbtn'+(c===activeFilter?' on':'')+'" onclick="setFilter(\''+esc(c)+'\')">'+esc(c)+'</button>';
+  }).join('');
+
+  var done=allTasks.filter(isDone).length;
+  var pct=allTasks.length?Math.round(done/allTasks.length*100):0;
+  document.getElementById('sTotal').textContent=allTasks.length;
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sLeft').textContent=allTasks.length-done;
+  document.getElementById('pPct').textContent=pct+'%';
+  document.getElementById('pFill').style.width=pct+'%';
+
+  var shown=activeFilter==='All'?allTasks:allTasks.filter(function(t){
+    return (t.category||'General')===activeFilter;
+  });
+  var el=document.getElementById('taskList');
+  if(!shown.length){el.innerHTML='<div class="empty">No tasks here.</div>';return;}
+  el.innerHTML=shown.map(function(t){
+    var d=isDone(t);
+    return '<div class="task'+(d?' done':'')+'">'+
+      '<div class="task-time">'+esc(t.time||'—')+'</div>'+
+      '<div class="task-body"><div class="task-name">'+esc(t.task)+'</div>'+
+      '<span class="task-cat">'+esc(t.category||'General')+'</span></div>'+
+      '<div class="task-check'+(d?' yes':'')+'">'+( d?'&#10003;':'' )+'</div></div>';
+  }).join('');
+}
+
+function setFilter(c){activeFilter=c;render();}
+function isDone(t){return /^yes$/i.test(t['done?']||t.done||'');}
+function showErr(msg){
+  var el=document.getElementById('errMsg');
+  el.textContent=msg; el.style.display=msg?'block':'none';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+setInterval(function(){if(scriptUrl)doLoad();},60000);
+</script>
+</body>
+</html>
