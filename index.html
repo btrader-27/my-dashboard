@@ -7,429 +7,124 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg:       #07080f;
-  --s1:       #0e0f1a;
-  --s2:       #13141f;
-  --card:     #161724;
-  --border:   #1f2035;
-  --border2:  #2a2b45;
-  --mint:     #5eead4;
-  --violet:   #7c6af7;
-  --gold:     #f59e0b;
-  --rose:     #fb7185;
-  --green:    #34d399;
-  --text:     #e2e0f0;
-  --muted:    #5a5c7a;
-  --r:        16px;
+  --bg:#07080f; --s1:#0e0f1a; --s2:#13141f; --card:#161724;
+  --border:#1f2035; --border2:#2a2b45;
+  --mint:#5eead4; --violet:#7c6af7; --gold:#f59e0b;
+  --rose:#fb7185; --green:#34d399;
+  --text:#e2e0f0; --muted:#5a5c7a; --r:16px;
 }
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.6;}
 
-/* ── NOISE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: .6;
-}
+/* SETUP */
+#setup{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:2.5rem 1.5rem;text-align:center;position:relative;z-index:1;}
+.setup-glow{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(94,234,212,.06) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+#setup h1{font-family:'DM Serif Display',serif;font-size:clamp(2.2rem,5vw,3rem);background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.4rem;line-height:1.1;}
+#setup .tagline{color:var(--muted);font-size:.93rem;margin-bottom:2.5rem;font-weight:300;}
+.setup-box{width:100%;max-width:520px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:1.5rem;margin-bottom:1rem;text-align:left;}
+.setup-box label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:.45rem;}
+.setup-box input{width:100%;padding:.8rem 1rem;background:var(--s1);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:.88rem;font-family:inherit;outline:none;transition:border-color .2s;}
+.setup-box input:focus{border-color:var(--mint);}
+.setup-btn{width:100%;max-width:520px;padding:.9rem;background:linear-gradient(135deg,var(--mint),var(--violet));border:none;border-radius:var(--r);color:#07080f;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;margin-bottom:1.5rem;letter-spacing:.02em;}
+.steps{width:100%;max-width:520px;text-align:left;}
+.step{display:flex;gap:.9rem;padding:.75rem 0;border-bottom:1px solid var(--border);font-size:.82rem;color:var(--muted);line-height:1.6;align-items:flex-start;}
+.step:last-child{border-bottom:none;}
+.step-n{width:20px;height:20px;border-radius:50%;background:var(--border2);color:var(--text);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.12rem;}
+.step strong{color:var(--text);}
+.code-block{width:100%;max-width:520px;background:var(--s1);border:1px solid var(--border2);border-radius:12px;padding:1rem 1.2rem;text-align:left;margin-top:1.2rem;}
+.code-block .lbl{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+.code-block pre{font-size:.73rem;color:var(--mint);font-family:'SF Mono','Fira Code',monospace;white-space:pre;line-height:1.8;overflow-x:auto;}
 
-/* ── SETUP SCREEN ── */
-#setup {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 2.5rem 1.5rem;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-}
-.setup-glow {
-  position: absolute;
-  width: 500px; height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(94,234,212,.06) 0%, transparent 70%);
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-#setup h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(2.4rem, 5vw, 3.2rem);
-  background: linear-gradient(135deg, var(--mint), var(--violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: .5rem;
-  line-height: 1.1;
-}
-#setup .tagline {
-  color: var(--muted);
-  font-size: .95rem;
-  margin-bottom: 2.5rem;
-  font-weight: 300;
-}
-.setup-box {
-  width: 100%;
-  max-width: 520px;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: var(--r);
-  padding: 1.6rem;
-  margin-bottom: 1rem;
-  text-align: left;
-}
-.setup-box label {
-  display: block;
-  font-size: .75rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: .5rem;
-}
-.setup-box input {
-  width: 100%;
-  padding: .8rem 1rem;
-  background: var(--s1);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  color: var(--text);
-  font-size: .9rem;
-  font-family: inherit;
-  outline: none;
-  transition: border-color .2s;
-}
-.setup-box input:focus { border-color: var(--mint); }
-.setup-btn {
-  width: 100%;
-  max-width: 520px;
-  padding: .9rem;
-  background: linear-gradient(135deg, var(--mint), var(--violet));
-  border: none;
-  border-radius: var(--r);
-  color: #07080f;
-  font-size: 1rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  transition: opacity .2s;
-  letter-spacing: .02em;
-}
-.setup-btn:hover { opacity: .88; }
-.setup-steps {
-  width: 100%;
-  max-width: 520px;
-  margin-top: 1.2rem;
-  text-align: left;
-}
-.step {
-  display: flex;
-  gap: .9rem;
-  padding: .75rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: .83rem;
-  color: var(--muted);
-  line-height: 1.6;
-  align-items: flex-start;
-}
-.step:last-child { border-bottom: none; }
-.step-n {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  background: var(--border2);
-  color: var(--text);
-  font-size: .7rem;
-  font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  margin-top: .12rem;
-}
-.step strong { color: var(--text); }
-.step code {
-  background: var(--s1);
-  color: var(--mint);
-  font-size: .75rem;
-  padding: .05rem .4rem;
-  border-radius: 4px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
-}
+/* DASHBOARD */
+#dash{display:none;position:relative;z-index:1;}
+nav{position:sticky;top:0;z-index:50;background:rgba(7,8,15,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+.nav-left h1{font-family:'DM Serif Display',serif;font-size:1.35rem;background:linear-gradient(135deg,var(--mint),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-date{font-size:.75rem;color:var(--muted);margin-top:.1rem;}
+.nav-right{display:flex;gap:.5rem;align-items:center;}
+.nbtn{padding:.4rem 1rem;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--text);font-size:.78rem;font-family:inherit;cursor:pointer;transition:all .15s;}
+.nbtn:hover{border-color:var(--muted);}
+.nbtn.primary{background:var(--mint);border-color:var(--mint);color:#07080f;font-weight:700;}
+.last-up{font-size:.71rem;color:var(--border2);}
 
-/* ── DASHBOARD ── */
-#dash { display: none; position: relative; z-index: 1; }
+.hero{max-width:900px;margin:2.5rem auto 0;padding:0 1.5rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem 1.4rem;position:relative;overflow:hidden;}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r) var(--r) 0 0;}
+.stat-card.total::after{background:var(--violet);}
+.stat-card.done::after{background:var(--green);}
+.stat-card.left::after{background:var(--gold);}
+.stat-num{font-family:'DM Serif Display',serif;font-size:2.6rem;line-height:1;margin-bottom:.3rem;}
+.stat-card.total .stat-num{color:var(--violet);}
+.stat-card.done  .stat-num{color:var(--green);}
+.stat-card.left  .stat-num{color:var(--gold);}
+.stat-label{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.04em;text-transform:uppercase;}
 
-/* NAV */
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(7,8,15,.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-  padding: 1rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.nav-left h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.35rem;
-  background: linear-gradient(135deg, var(--mint), var(--violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.nav-left .nav-date { font-size: .75rem; color: var(--muted); margin-top: .1rem; }
-.nav-right { display: flex; gap: .5rem; align-items: center; }
-.nbtn {
-  padding: .4rem 1rem;
-  border-radius: 99px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--text);
-  font-size: .78rem;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all .15s;
-}
-.nbtn:hover { border-color: var(--muted); }
-.nbtn.primary {
-  background: var(--mint);
-  border-color: var(--mint);
-  color: #07080f;
-  font-weight: 700;
-}
-.nbtn.primary:hover { opacity: .85; }
-.last-up { font-size: .72rem; color: var(--border2); }
+.prog-section{max-width:900px;margin:1.5rem auto 0;padding:0 1.5rem;}
+.prog-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.5rem;}
+.prog-label{font-size:.76rem;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;}
+.prog-pct{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);}
+.prog-track{height:6px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,var(--mint),var(--violet));border-radius:99px;transition:width .8s cubic-bezier(.4,0,.2,1);width:0%;}
 
-/* HERO STATS */
-.hero {
-  max-width: 900px;
-  margin: 2.5rem auto 0;
-  padding: 0 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 1rem;
-}
-.stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 1.3rem 1.4rem;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  border-radius: var(--r) var(--r) 0 0;
-}
-.stat-card.total::after { background: var(--violet); }
-.stat-card.done::after  { background: var(--green); }
-.stat-card.left::after  { background: var(--gold); }
-.stat-num {
-  font-family: 'DM Serif Display', serif;
-  font-size: 2.6rem;
-  line-height: 1;
-  margin-bottom: .3rem;
-}
-.stat-card.total .stat-num { color: var(--violet); }
-.stat-card.done  .stat-num { color: var(--green); }
-.stat-card.left  .stat-num { color: var(--gold); }
-.stat-label { font-size: .73rem; color: var(--muted); font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+.filter-row{max-width:900px;margin:1.5rem auto 0;padding:0 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;}
+.chip{padding:.3rem .9rem;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--muted);font-size:.78rem;font-weight:500;cursor:pointer;font-family:inherit;transition:all .15s;}
+.chip:hover{border-color:var(--muted);color:var(--text);}
+.chip.on{background:var(--violet);border-color:var(--violet);color:#fff;}
 
-/* PROGRESS */
-.prog-section {
-  max-width: 900px;
-  margin: 1.5rem auto 0;
-  padding: 0 1.5rem;
-}
-.prog-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: .5rem;
-}
-.prog-label { font-size: .78rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
-.prog-pct { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--text); }
-.prog-track {
-  height: 6px;
-  background: var(--border);
-  border-radius: 99px;
-  overflow: hidden;
-}
-.prog-bar {
-  height: 100%;
-  background: linear-gradient(90deg, var(--mint), var(--violet));
-  border-radius: 99px;
-  transition: width .8s cubic-bezier(.4,0,.2,1);
-  width: 0%;
-}
+.task-section{max-width:900px;margin:1.2rem auto 3rem;padding:0 1.5rem;}
+.task-item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.95rem 1.2rem;margin-bottom:.5rem;display:flex;align-items:center;gap:1.1rem;transition:border-color .2s,transform .15s;}
+.task-item:hover{border-color:var(--border2);transform:translateX(2px);}
+.task-item.is-done{opacity:.32;}
+.task-item.is-done .task-name{text-decoration:line-through;}
+.task-time{min-width:72px;font-size:.74rem;font-weight:600;color:var(--violet);text-align:center;letter-spacing:.02em;}
+.task-body{flex:1;}
+.task-name{font-size:.97rem;font-weight:500;margin-bottom:.22rem;}
+.task-cat{display:inline-flex;align-items:center;font-size:.67rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:.12rem .6rem;border-radius:99px;background:rgba(124,106,247,.12);color:var(--violet);}
 
-/* FILTERS */
-.filter-row {
-  max-width: 900px;
-  margin: 1.5rem auto 0;
-  padding: 0 1.5rem;
-  display: flex;
-  gap: .5rem;
-  flex-wrap: wrap;
+/* CLICKABLE CHECKMARK */
+.task-check{
+  width:28px;height:28px;border-radius:50%;
+  border:2px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.85rem;
+  cursor:pointer;
+  transition:all .2s, transform .12s;
+  background:transparent;
+  position:relative;
 }
-.chip {
-  padding: .3rem .9rem;
-  border-radius: 99px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--muted);
-  font-size: .78rem;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.chip:hover { border-color: var(--muted); color: var(--text); }
-.chip.on {
-  background: var(--violet);
-  border-color: var(--violet);
-  color: #fff;
-}
+.task-check:hover{border-color:var(--green);transform:scale(1.12);}
+.task-check.checked{background:var(--green);border-color:var(--green);color:#07080f;font-weight:900;}
+.task-check.saving{border-color:var(--gold);animation:pulse .6s infinite;}
+.task-check.error{border-color:var(--rose);}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
 
-/* TASK LIST */
-.task-section {
-  max-width: 900px;
-  margin: 1.2rem auto 3rem;
-  padding: 0 1.5rem;
-}
-.task-item {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: .95rem 1.2rem;
-  margin-bottom: .5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.1rem;
-  transition: border-color .2s, transform .15s;
-}
-.task-item:hover { border-color: var(--border2); transform: translateX(2px); }
-.task-item.is-done { opacity: .32; }
-.task-item.is-done .task-name { text-decoration: line-through; }
-.task-time {
-  min-width: 72px;
-  font-size: .74rem;
-  font-weight: 600;
-  color: var(--violet);
-  text-align: center;
-  letter-spacing: .02em;
-}
-.task-body { flex: 1; }
-.task-name { font-size: .97rem; font-weight: 500; margin-bottom: .22rem; }
-.task-cat {
-  display: inline-flex;
-  align-items: center;
-  gap: .3rem;
-  font-size: .67rem;
-  font-weight: 600;
-  letter-spacing: .05em;
-  text-transform: uppercase;
-  padding: .12rem .6rem;
-  border-radius: 99px;
-  background: rgba(124,106,247,.12);
-  color: var(--violet);
-}
-.task-check {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  border: 2px solid var(--border2);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  font-size: .8rem;
-  transition: all .2s;
-}
-.task-check.checked {
-  background: var(--green);
-  border-color: var(--green);
-  color: #07080f;
-  font-weight: 900;
-}
+.err-banner{max-width:900px;margin:1rem auto 0;padding:0 1.5rem;display:none;}
+.err-inner{background:rgba(251,113,133,.08);border:1px solid rgba(251,113,133,.22);border-radius:12px;padding:.85rem 1.1rem;font-size:.83rem;color:var(--rose);line-height:1.6;}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--border2);}
 
-/* ERROR */
-.err-banner {
-  max-width: 900px;
-  margin: 1rem auto 0;
-  padding: 0 1.5rem;
-  display: none;
-}
-.err-inner {
-  background: rgba(251,113,133,.08);
-  border: 1px solid rgba(251,113,133,.22);
-  border-radius: 12px;
-  padding: .85rem 1.1rem;
-  font-size: .83rem;
-  color: var(--rose);
-  line-height: 1.6;
-}
+/* TOAST */
+#toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:.7rem 1.1rem;font-size:.82rem;color:var(--text);opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;z-index:100;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast.ok{border-color:var(--green);color:var(--green);}
+#toast.err{border-color:var(--rose);color:var(--rose);}
 
-.empty-state {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: var(--border2);
-  font-size: .95rem;
-}
-
-/* DEBUG */
-.debug-wrap {
-  max-width: 900px;
-  margin: 0 auto 2rem;
-  padding: 0 1.5rem;
-}
-.debug-wrap details {
-  background: var(--s1);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: .6rem .9rem;
-}
-.debug-wrap summary { cursor: pointer; font-size: .73rem; color: var(--muted); user-select: none; }
-#debugLog { margin-top: .5rem; font-family: 'SF Mono', 'Fira Code', monospace; font-size: .69rem; color: var(--muted); white-space: pre-wrap; line-height: 1.9; }
-
-footer {
-  text-align: center;
-  padding: 1.2rem;
-  font-size: .72rem;
-  color: var(--border2);
-  border-top: 1px solid var(--border);
-}
-
-/* RESPONSIVE */
-@media (max-width: 500px) {
-  .hero { grid-template-columns: repeat(3,1fr); gap: .6rem; }
-  .stat-num { font-size: 2rem; }
-  nav { padding: .85rem 1rem; }
-}
+.debug-wrap{max-width:900px;margin:0 auto 2rem;padding:0 1.5rem;}
+.debug-wrap details{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:.6rem .9rem;}
+.debug-wrap summary{cursor:pointer;font-size:.73rem;color:var(--muted);user-select:none;}
+#debugLog{margin-top:.5rem;font-family:'SF Mono','Fira Code',monospace;font-size:.69rem;color:var(--muted);white-space:pre-wrap;line-height:1.9;}
+footer{text-align:center;padding:1.2rem;font-size:.72rem;color:var(--border2);border-top:1px solid var(--border);}
+@media(max-width:500px){.hero{gap:.6rem;}.stat-num{font-size:2rem;}nav{padding:.85rem 1rem;}}
 </style>
 </head>
 <body>
 
-<!-- ── SETUP ── -->
+<div id="toast"></div>
+
+<!-- SETUP -->
 <div id="setup">
   <div class="setup-glow"></div>
   <h1>My Daily Tasks</h1>
-  <p class="tagline">Your Google Sheet, beautifully displayed. Live.</p>
+  <p class="tagline">Live from your Google Sheet. Click to check things off.</p>
 
   <div class="setup-box">
     <label>Google Apps Script URL</label>
@@ -437,29 +132,53 @@ footer {
   </div>
   <button class="setup-btn" onclick="go()">Launch Dashboard</button>
 
-  <div class="setup-steps">
+  <div class="steps">
     <div class="step"><div class="step-n">1</div><div>In your Google Sheet: <strong>Extensions → Apps Script</strong></div></div>
-    <div class="step"><div class="step-n">2</div><div>Delete all code and paste the script below, then save</div></div>
-    <div class="step"><div class="step-n">3</div><div><strong>Deploy → New deployment → Web app</strong><br>Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong></div></div>
-    <div class="step"><div class="step-n">4</div><div>Copy the deployment URL, paste above, click Launch</div></div>
+    <div class="step"><div class="step-n">2</div><div>Delete all existing code and paste the script below</div></div>
+    <div class="step"><div class="step-n">3</div><div><strong>Deploy → New deployment → Web app</strong><br>Execute as: <strong>Me</strong> &nbsp;·&nbsp; Who has access: <strong>Anyone</strong><br>Copy the URL and paste above</div></div>
   </div>
 
-  <div style="width:100%;max-width:520px;margin-top:1.2rem;background:var(--s1);border:1px solid var(--border2);border-radius:12px;padding:1rem 1.2rem;text-align:left;">
-    <div style="font-size:.7rem;color:var(--muted);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em;">Apps Script code to paste</div>
-    <code style="font-size:.75rem;color:var(--mint);font-family:'SF Mono','Fira Code',monospace;white-space:pre;display:block;line-height:1.8;">function doGet(e) {
+  <div class="code-block">
+    <div class="lbl">Paste this into Apps Script</div>
+    <pre>function doGet(e) {
   var sheet = SpreadsheetApp
     .getActiveSpreadsheet()
     .getSheetByName("Tasks");
   var rows = sheet.getDataRange().getValues();
   var csv = rows.map(r => r.join(",")).join("\n");
-  return ContentService
-    .createTextOutput(csv)
+  return ContentService.createTextOutput(csv)
     .setMimeType(ContentService.MimeType.TEXT);
-}</code>
+}
+
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getSheetByName("Tasks");
+  var rows = sheet.getDataRange().getValues();
+  var headerIdx = -1;
+  for (var i = 0; i &lt; rows.length; i++) {
+    var low = rows[i].map(c => String(c).toLowerCase());
+    if (low.indexOf("task") !== -1) { headerIdx = i; break; }
+  }
+  var hdrs = rows[headerIdx].map(c => String(c).toLowerCase());
+  var taskCol = hdrs.indexOf("task");
+  var doneCol = hdrs.indexOf("done?");
+  if (doneCol === -1) doneCol = hdrs.indexOf("done");
+  for (var r = headerIdx + 1; r &lt; rows.length; r++) {
+    if (String(rows[r][taskCol]).trim() === data.task) {
+      sheet.getRange(r + 1, doneCol + 1)
+        .setValue(data.done ? "Yes" : "No");
+      break;
+    }
+  }
+  return ContentService.createTextOutput("ok")
+    .setMimeType(ContentService.MimeType.TEXT);
+}</pre>
   </div>
 </div>
 
-<!-- ── DASHBOARD ── -->
+<!-- DASHBOARD -->
 <div id="dash">
   <nav>
     <div class="nav-left">
@@ -476,7 +195,7 @@ footer {
   <div class="hero">
     <div class="stat-card total"><div class="stat-num" id="sTotal">0</div><div class="stat-label">Total</div></div>
     <div class="stat-card done"><div class="stat-num"  id="sDone">0</div><div class="stat-label">Done</div></div>
-    <div class="stat-card left"><div class="stat-num"  id="sLeft">0</div><div class="stat-label">Remaining</div></div>
+    <div class="stat-card left"><div class="stat-num"  id="sLeft">0</div><div class="stat-label">Left</div></div>
   </div>
 
   <div class="prog-section">
@@ -488,19 +207,13 @@ footer {
   </div>
 
   <div class="filter-row" id="filterRow"></div>
-
   <div class="err-banner" id="errBanner"><div class="err-inner" id="errMsg"></div></div>
-
   <div class="task-section" id="taskSection"></div>
 
   <div class="debug-wrap">
-    <details>
-      <summary>&#128027; Debug log</summary>
-      <div id="debugLog"></div>
-    </details>
+    <details><summary>&#128027; Debug log</summary><div id="debugLog"></div></details>
   </div>
-
-  <footer>Auto-refreshes every 60 seconds &nbsp;·&nbsp; Last loaded: <span id="lastLoad">—</span></footer>
+  <footer>Click any circle to mark done — syncs to your sheet instantly &nbsp;·&nbsp; Last loaded: <span id="lastLoad">—</span></footer>
 </div>
 
 <script>
@@ -509,153 +222,202 @@ var activeFilter = 'All';
 var scriptUrl    = '';
 var dbLines      = [];
 
-function log(m) {
-  dbLines.push(new Date().toLocaleTimeString() + '  ' + m);
-  var el = document.getElementById('debugLog');
-  if (el) el.textContent = dbLines.join('\n');
+function log(m){
+  dbLines.push(new Date().toLocaleTimeString()+'  '+m);
+  var el=document.getElementById('debugLog');
+  if(el) el.textContent=dbLines.join('\n');
 }
 
-// ── INIT ──
+// Init
 document.getElementById('navDate').textContent = new Date().toLocaleDateString('en-US',{
-  weekday:'long', year:'numeric', month:'long', day:'numeric'
+  weekday:'long',year:'numeric',month:'long',day:'numeric'
 });
-try { scriptUrl = localStorage.getItem('gs_url') || ''; } catch(e){}
-if (scriptUrl) {
-  document.getElementById('scriptUrl').value = scriptUrl;
-  showDash();
-  doLoad();
+try{ scriptUrl=localStorage.getItem('gs_url')||''; }catch(e){}
+if(scriptUrl){
+  document.getElementById('scriptUrl').value=scriptUrl;
+  showDash(); doLoad();
 }
 
-function go() {
-  var v = document.getElementById('scriptUrl').value.trim();
-  if (!v) { alert('Please paste your Apps Script URL.'); return; }
-  scriptUrl = v;
-  try { localStorage.setItem('gs_url', scriptUrl); } catch(e){}
-  showDash();
-  doLoad();
+function go(){
+  var v=document.getElementById('scriptUrl').value.trim();
+  if(!v){alert('Please paste your Apps Script URL.');return;}
+  scriptUrl=v;
+  try{localStorage.setItem('gs_url',scriptUrl);}catch(e){}
+  showDash(); doLoad();
 }
-function showDash() {
-  document.getElementById('setup').style.display = 'none';
-  document.getElementById('dash').style.display  = 'block';
+function showDash(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('dash').style.display='block';
 }
-function goSetup() {
-  document.getElementById('scriptUrl').value     = scriptUrl;
-  document.getElementById('setup').style.display = 'flex';
-  document.getElementById('dash').style.display  = 'none';
+function goSetup(){
+  document.getElementById('scriptUrl').value=scriptUrl;
+  document.getElementById('setup').style.display='flex';
+  document.getElementById('dash').style.display='none';
 }
 
-// ── FETCH ──
-async function doLoad() {
-  dbLines = [];
+// LOAD
+async function doLoad(){
+  dbLines=[];
   showErr('');
-  document.getElementById('taskSection').innerHTML = '<div class="empty-state">Loading your tasks...</div>';
-  log('Fetching: ' + scriptUrl.slice(0,70) + '...');
-  try {
-    var r = await fetch(scriptUrl, { redirect: 'follow' });
-    log('Status: ' + r.status);
-    if (!r.ok) throw new Error('HTTP ' + r.status + ' — check Apps Script deployment settings');
-    var text = await r.text();
-    log('Received ' + text.length + ' bytes');
-    allTasks = parseCSV(text);
-    if (!allTasks.length) throw new Error('0 tasks found — make sure your tab is named "Tasks" and has data rows');
-    activeFilter = 'All';
+  document.getElementById('taskSection').innerHTML='<div class="empty-state">Loading...</div>';
+  log('Fetching: '+scriptUrl.slice(0,70)+'...');
+  try{
+    var r=await fetch(scriptUrl,{redirect:'follow'});
+    log('Status: '+r.status);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var text=await r.text();
+    log('Received '+text.length+' bytes');
+    allTasks=parseCSV(text);
+    if(!allTasks.length) throw new Error('0 tasks found — check tab name is "Tasks"');
+    activeFilter='All';
     render();
-    var t = new Date().toLocaleTimeString();
-    document.getElementById('lastLoad').textContent = t;
-    document.getElementById('lastUp').textContent   = 'Updated ' + t;
-  } catch(e) {
+    var t=new Date().toLocaleTimeString();
+    document.getElementById('lastLoad').textContent=t;
+    document.getElementById('lastUp').textContent='Updated '+t;
+  }catch(e){
     showErr(e.message);
-    document.getElementById('taskSection').innerHTML = '';
-    log('ERROR: ' + e.message);
+    document.getElementById('taskSection').innerHTML='';
+    log('ERROR: '+e.message);
   }
 }
 
-// ── CSV PARSE (smart header detection) ──
-function parseCSV(raw) {
-  raw = raw.replace(/^\uFEFF/, '');
-  var lines = raw.split(/\r?\n/).filter(function(l){ return l.trim(); });
+// TOGGLE DONE — writes back to sheet via doPost
+async function toggleDone(taskName, currentlyDone, checkEl) {
+  var newDone = !currentlyDone;
 
-  function split(line) {
-    var out=[], cur='', q=false;
-    for (var i=0; i<line.length; i++) {
+  // Optimistic UI update
+  checkEl.className = 'task-check saving';
+  checkEl.textContent = '';
+  var taskEl = checkEl.closest('.task-item');
+
+  try {
+    var r = await fetch(scriptUrl, {
+      method:  'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ task: taskName, done: newDone })
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var resp = await r.text();
+    if (resp.trim() !== 'ok') throw new Error('Unexpected response: ' + resp);
+
+    // Update local data
+    for (var i = 0; i < allTasks.length; i++) {
+      if (allTasks[i].task === taskName) {
+        allTasks[i]['done?'] = newDone ? 'Yes' : 'No';
+        allTasks[i].done     = newDone ? 'Yes' : 'No';
+        break;
+      }
+    }
+
+    // Update UI
+    checkEl.className = newDone ? 'task-check checked' : 'task-check';
+    checkEl.textContent = newDone ? '✓' : '';
+    taskEl.classList.toggle('is-done', newDone);
+    taskEl.querySelector('.task-name').style.textDecoration = newDone ? 'line-through' : '';
+    updateStats();
+    toast(newDone ? '✓ Marked done' : 'Marked incomplete', 'ok');
+    log('Toggled "'+taskName+'" → '+(newDone?'Yes':'No'));
+  } catch(e) {
+    checkEl.className = 'task-check error';
+    checkEl.textContent = '!';
+    toast('Save failed: ' + e.message, 'err');
+    log('Toggle error: '+e.message);
+  }
+}
+
+function parseCSV(raw){
+  raw=raw.replace(/^\uFEFF/,'');
+  var lines=raw.split(/\r?\n/).filter(function(l){return l.trim();});
+  function split(line){
+    var out=[],cur='',q=false;
+    for(var i=0;i<line.length;i++){
       var c=line[i];
-      if (c==='"') q=!q;
-      else if (c===',' && !q){ out.push(cur.replace(/"/g,'').trim()); cur=''; }
+      if(c==='"') q=!q;
+      else if(c===',' && !q){out.push(cur.replace(/"/g,'').trim());cur='';}
       else cur+=c;
     }
     out.push(cur.replace(/"/g,'').trim());
     return out;
   }
-
-  // Find header row containing "task"
-  var hi = -1;
-  for (var i=0; i<lines.length; i++) {
-    if (split(lines[i]).map(function(c){return c.toLowerCase();}).indexOf('task') !== -1) { hi=i; break; }
+  var hi=-1;
+  for(var i=0;i<lines.length;i++){
+    if(split(lines[i]).map(function(c){return c.toLowerCase();}).indexOf('task')!==-1){hi=i;break;}
   }
-  if (hi === -1) {
-    lines.slice(0,5).forEach(function(l,i){ log('row['+i+']: '+l.slice(0,80)); });
-    return [];
+  if(hi===-1){lines.slice(0,5).forEach(function(l,i){log('row['+i+']: '+l.slice(0,80));});return[];}
+  var hdrs=split(lines[hi]).map(function(h){return h.toLowerCase();});
+  log('Headers at row '+hi+': '+hdrs.join(' | '));
+  var rows=[];
+  for(var r=hi+1;r<lines.length;r++){
+    var vals=split(lines[r]);
+    var obj={};
+    hdrs.forEach(function(h,idx){obj[h]=(vals[idx]||'').trim();});
+    if(obj.task) rows.push(obj);
   }
-
-  var hdrs = split(lines[hi]).map(function(h){ return h.toLowerCase(); });
-  log('Headers at row ' + hi + ': ' + hdrs.join(' | '));
-  var rows = [];
-  for (var r=hi+1; r<lines.length; r++) {
-    var vals = split(lines[r]);
-    var obj  = {};
-    hdrs.forEach(function(h,idx){ obj[h]=(vals[idx]||'').trim(); });
-    if (obj.task) rows.push(obj);
-  }
-  log('Tasks found: ' + rows.length);
+  log('Tasks: '+rows.length);
   return rows;
 }
 
-// ── RENDER ──
-function render() {
-  // Filters
-  var cats = ['All'];
-  allTasks.forEach(function(t){ var c=t.category||'General'; if(cats.indexOf(c)===-1) cats.push(c); });
-  document.getElementById('filterRow').innerHTML = cats.map(function(c){
+function render(){
+  var cats=['All'];
+  allTasks.forEach(function(t){var c=t.category||'General';if(cats.indexOf(c)===-1)cats.push(c);});
+  document.getElementById('filterRow').innerHTML=cats.map(function(c){
     return '<button class="chip'+(c===activeFilter?' on':'')+'" onclick="filter(\''+esc(c)+'\')">'+esc(c)+'</button>';
   }).join('');
+  updateStats();
+  renderTasks();
+}
 
-  // Stats
-  var done = allTasks.filter(isDone).length;
-  var pct  = allTasks.length ? Math.round(done/allTasks.length*100) : 0;
-  document.getElementById('sTotal').textContent = allTasks.length;
-  document.getElementById('sDone').textContent  = done;
-  document.getElementById('sLeft').textContent  = allTasks.length - done;
-  document.getElementById('pPct').textContent   = pct + '%';
-  document.getElementById('pBar').style.width   = pct + '%';
-
-  // Tasks
-  var shown = activeFilter==='All' ? allTasks
-    : allTasks.filter(function(t){ return (t.category||'General')===activeFilter; });
-  var el = document.getElementById('taskSection');
-  if (!shown.length) { el.innerHTML='<div class="empty-state">No tasks in this category.</div>'; return; }
-  el.innerHTML = shown.map(function(t){
-    var d = isDone(t);
-    return '<div class="task-item'+(d?' is-done':'')+'">'+
+function renderTasks(){
+  var shown=activeFilter==='All'?allTasks:allTasks.filter(function(t){return(t.category||'General')===activeFilter;});
+  var el=document.getElementById('taskSection');
+  if(!shown.length){el.innerHTML='<div class="empty-state">No tasks here.</div>';return;}
+  el.innerHTML=shown.map(function(t,i){
+    var d=isDone(t);
+    var idx=allTasks.indexOf(t);
+    return '<div class="task-item'+(d?' is-done':'')+'" id="ti'+idx+'">'+
       '<div class="task-time">'+esc(t.time||'—')+'</div>'+
       '<div class="task-body">'+
-        '<div class="task-name">'+esc(t.task)+'</div>'+
+        '<div class="task-name"'+(d?' style="text-decoration:line-through"':'')+'>'+esc(t.task)+'</div>'+
         '<span class="task-cat">'+esc(t.category||'General')+'</span>'+
       '</div>'+
-      '<div class="task-check'+(d?' checked':'')+'">'+( d?'✓':'' )+'</div>'+
+      '<div class="task-check'+(d?' checked':'')+'" onclick="toggleDone(\''+esc(t.task)+'\','+d+',this)">'+
+        (d?'✓':'')+
+      '</div>'+
     '</div>';
   }).join('');
 }
 
-function filter(c) { activeFilter=c; render(); }
-function isDone(t) { return /^yes$/i.test(t['done?']||t.done||''); }
-function showErr(msg) {
-  var b=document.getElementById('errBanner'), m=document.getElementById('errMsg');
-  m.textContent=msg; b.style.display=msg?'block':'none';
+function updateStats(){
+  var done=allTasks.filter(isDone).length;
+  var pct=allTasks.length?Math.round(done/allTasks.length*100):0;
+  document.getElementById('sTotal').textContent=allTasks.length;
+  document.getElementById('sDone').textContent=done;
+  document.getElementById('sLeft').textContent=allTasks.length-done;
+  document.getElementById('pPct').textContent=pct+'%';
+  document.getElementById('pBar').style.width=pct+'%';
 }
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// Auto-refresh every 60s
-setInterval(function(){ if(scriptUrl) doLoad(); }, 60000);
+function filter(c){activeFilter=c;renderTasks();
+  document.querySelectorAll('.chip').forEach(function(b){b.classList.toggle('on',b.textContent===c);});
+}
+function isDone(t){return /^yes$/i.test(t['done?']||t.done||'');}
+function showErr(msg){
+  var b=document.getElementById('errBanner'),m=document.getElementById('errMsg');
+  m.textContent=msg;b.style.display=msg?'block':'none';
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,"\\'");}
+
+var toastTimer;
+function toast(msg, type){
+  var el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='show '+(type||'');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){el.className='';},2500);
+}
+
+setInterval(function(){if(scriptUrl)doLoad();},60000);
 </script>
 </body>
 </html>
